@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仓库管理系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        .btn {
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        .table {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+        }
+        .hero-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-archive" viewBox="0 0 16 16">
+                    <path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1V2zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5H2zm13-3H1v2h14V2z"/>
+                    <path d="M5.5 7.5A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+                仓库管理系统
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('index') }}">商品管理</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('add') }}">添加商品</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('search') }}">搜索商品</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <div class="hero-section text-center">
+        <div class="container">
+            <h1>智能仓库管理系统</h1>
+            <p class="lead">高效管理您的仓库商品，提升运营效率</p>
+        </div>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="container mb-5">
+        <!-- 数据概览 -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title">商品总数</h5>
+                                <p class="card-text display-4">{{ items|length }}</p>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-archive" viewBox="0 0 16 16">
+                                <path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1V2zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5H2zm13-3H1v2h14V2z"/>
+                                <path d="M5.5 7.5A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title">商品总量</h5>
+                                <p class="card-text display-4">{{ total_quantity }}</p>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-bar-chart" viewBox="0 0 16 16">
+                                <path d="M4 11H2v3h2v-3zm5-4H7v7h2V7zm5-5H12v12h2V2z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title">分类数量</h5>
+                                <p class="card-text display-4">{{ category_count }}</p>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-tag" viewBox="0 0 16 16">
+                                <path d="M6 4.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0zm0 2.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0zm0 2.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0zm0 2.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0zm5-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0zm0 2.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0zm0 2.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0zm0 2.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主要内容区域 -->
+        <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+            <!-- 左侧：统计图表 -->
+            <div style="flex: 7; min-width: 0;">
+                <!-- 数据图表 -->
+                <div class="card" style="height: 100%;">
+                    <div class="card-body">
+                        <h3 class="text-primary mb-4">库存分析</h3>
+                        <div class="row" style="max-width: 95%; margin: 0 auto; padding-top: 20px; display: flex; align-items: center; justify-content: center; height: 400px;">
+                            <div class="col-md-6" style="flex: 1; height: 100%; display: flex; align-items: center; justify-content: center;">
+                                <canvas id="categoryChart" style="max-height: 350px;"></canvas>
+                            </div>
+                            <div class="col-md-6" style="flex: 1.2; height: 100%; display: flex; align-items: center; justify-content: center;">
+                                <div style="height: 100%; width: 100%; display: flex; align-items: center; justify-content: center;">
+                                    <canvas id="quantityChart" style="height: 100%; width: 100%;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：商品列表 -->
+            <div style="flex: 5; min-width: 0;">
+                <div class="card" style="height: 100%;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2 class="text-primary">商品列表</h2>
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('add') }}" class="btn btn-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                    </svg>
+                                    添加商品
+                                </a>
+                                <a href="{{ url_for('search') }}" class="btn btn-secondary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                    </svg>
+                                    搜索商品
+                                </a>
+                            </div>
+                        </div>
+                        
+                        {% if items %}
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark sticky-top">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>商品名称</th>
+                                        <th>数量</th>
+                                        <th>分类</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in items %}
+                                    <tr>
+                                        <td>{{ item.id }}</td>
+                                        <td>{{ item.name }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>{{ item.category }}</td>
+                                        <td>
+                                            <a href="{{ url_for('update', item_id=item.id) }}" class="btn btn-sm btn-warning me-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                                                </svg>
+                                                编辑
+                                            </a>
+                                            <a href="{{ url_for('delete', item_id=item.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('确定要删除这个商品吗？');">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                                </svg>
+                                                删除
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info text-center p-5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-box" viewBox="0 0 16 16" style="margin-bottom: 1rem;">
+                                <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"/>
+                            </svg>
+                            <h4>仓库为空</h4>
+                            <p>点击"添加商品"按钮开始管理您的库存</p>
+                            <a href="{{ url_for('add') }}" class="btn btn-primary mt-3">立即添加商品</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-3">
+        <div class="container text-center">
+            <p class="mb-0">© 2026 仓库管理系统 - 智能高效的库存管理解决方案</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script>
+        // 生成图表数据
+        let categoryChart; // 分类图表实例
+        let quantityChart; // 库存数量图表实例
+        
+        function initChart() {
+            // 分类数据
+            const categories = {};
+            {% for item in items %}
+                {% if item.category in categories %}
+                    categories['{{ item.category }}'] += {{ item.quantity }};
+                {% else %}
+                    categories['{{ item.category }}'] = {{ item.quantity }};
+                {% endif %}
+            {% endfor %}
+
+            // 库存数量数据
+            const itemNames = [];
+            const itemQuantities = [];
+            {% for item in items %}
+                itemNames.push('{{ item.name }}');
+                itemQuantities.push({{ item.quantity }});
+            {% endfor %}
+
+            // 库存数量图表
+            const quantityCtx = document.getElementById('quantityChart').getContext('2d');
+            
+            // 如果图表已存在，先销毁
+            if (quantityChart) {
+                quantityChart.destroy();
+            }
+            
+            // 创建柱状图
+            quantityChart = new Chart(quantityCtx, {
+                type: 'bar',
+                data: {
+                    labels: itemNames, // 商品名称
+                    datasets: [{
+                        data: itemQuantities, // 商品数量
+                        backgroundColor: '#36A2EB', // 柱状图颜色
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true, // 响应式
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '', // 标题为空
+                            font: {
+                                size: 16
+                            }
+                        },
+                        legend: {
+                            display: false // 隐藏图例
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true, // Y轴从0开始
+                            title: {
+                                display: true,
+                                text: '' // Y轴标题为空
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 分类图表
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            
+            // 如果图表已存在，先销毁
+            if (categoryChart) {
+                categoryChart.destroy();
+            }
+            
+            // 创建饼图
+            categoryChart = new Chart(categoryCtx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(categories), // 分类名称
+                    datasets: [{
+                        data: Object.values(categories), // 分类数量
+                        backgroundColor: [
+                            '#FF6384',
+                            '#36A2EB',
+                            '#FFCE56',
+                            '#4BC0C0',
+                            '#9966FF',
+                            '#FF9F40'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true, // 响应式
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '商品分类分布', // 图表标题
+                            font: {
+                                size: 16
+                            }
+                        },
+                        legend: {
+                            position: 'bottom' // 图例位置
+                        }
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化图表
+            initChart();
+
+            // 初始化拖拽功能
+            const tableBody = document.querySelector('tbody');
+            if (tableBody) {
+                // 为每行添加data-item-id属性，用于拖拽排序
+                const rows = tableBody.querySelectorAll('tr');
+                rows.forEach(row => {
+                    const idCell = row.querySelector('td:first-child');
+                    const itemId = idCell.textContent;
+                    row.setAttribute('data-item-id', itemId);
+                });
+
+                // 初始化Sortable.js拖拽功能
+                new Sortable(tableBody, {
+                    animation: 150, // 动画时间
+                    handle: 'td:first-child', // 长按ID列进行拖拽
+                    onEnd: function(evt) {
+                        // 拖拽结束后更新ID
+                        const rows = tableBody.querySelectorAll('tr');
+                        const itemIds = [];
+                        
+                        rows.forEach((row, index) => {
+                            const idCell = row.querySelector('td:first-child');
+                            const itemId = parseInt(row.getAttribute('data-item-id'));
+                            idCell.textContent = index + 1; // 更新显示的ID
+                            itemIds.push(itemId); // 收集商品ID
+                        });
+
+                        // 发送请求更新服务器端的顺序
+                        fetch('/update-order', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ item_ids: itemIds })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                console.log('顺序更新成功');
+                                // 刷新页面以更新图表
+                                location.reload();
+                            } else {
+                                console.error('顺序更新失败');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('更新顺序时出错:', error);
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

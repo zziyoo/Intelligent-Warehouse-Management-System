@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索商品 - 仓库管理系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        .btn {
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        .table {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+        }
+        .hero-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-archive" viewBox="0 0 16 16">
+                    <path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1V2zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5H2zm13-3H1v2h14V2z"/>
+                    <path d="M5.5 7.5A.5.5 0 0 1 6 7h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+                仓库管理系统
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">商品管理</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('add') }}">添加商品</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('search') }}">搜索商品</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <div class="hero-section text-center">
+        <div class="container">
+            <h1>智能仓库管理系统</h1>
+            <p class="lead">高效管理您的仓库商品，提升运营效率</p>
+        </div>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="container mb-5">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="mb-4">
+                    <h2 class="text-primary">搜索商品</h2>
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                        </svg>
+                        返回商品列表
+                    </a>
+                </div>
+                
+                <form method="POST" class="needs-validation" novalidate>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="输入商品名称或分类进行搜索" name="keyword" required>
+                        <button class="btn btn-primary" type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>
+                            搜索
+                        </button>
+                    </div>
+                    <div class="invalid-feedback d-block">
+                        请输入搜索关键词
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        {% if results %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="text-primary mb-4">搜索结果 (包含 "{{ keyword }}")</h3>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>商品名称</th>
+                                <th>数量</th>
+                                <th>分类</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in results %}
+                            <tr>
+                                <td>{{ item.id }}</td>
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{{ item.category }}</td>
+                                <td>
+                                    <a href="{{ url_for('update', item_id=item.id) }}" class="btn btn-sm btn-warning me-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                                        </svg>
+                                        编辑
+                                    </a>
+                                    <a href="{{ url_for('delete', item_id=item.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('确定要删除这个商品吗？');">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                        </svg>
+                                        删除
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% elif keyword %}
+        <div class="alert alert-info text-center p-5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16" style="margin-bottom: 1rem;">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+            </svg>
+            <h4>未找到相关商品</h4>
+            <p>未找到包含 "{{ keyword }}" 的商品</p>
+            <a href="{{ url_for('add') }}" class="btn btn-primary mt-3">添加新商品</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-3">
+        <div class="container text-center">
+            <p class="mb-0">© 2026 仓库管理系统 - 智能高效的库存管理解决方案</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 表单验证
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+</body>
+</html>
